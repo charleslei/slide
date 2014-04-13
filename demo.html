@@ -1,36 +1,80 @@
-<! doctype html>
+﻿<! doctype html>
 <html>
-	<head>
-		<style type="text/css">
-			.ctn {width: 1024px;height:100%;margin: 0 auto;border: 1px solid #ccc;}
-			.slide-wrapper{width: 800px;height: 500px;overflow: hidden;}
-			.slide-wrapper .big li{
+    <head>
+        <style type="text/css">
+            .ctn {margin: 50px 0;}
+            .slide{border: 2px solid #999;width: 700px;height: 525px;overflow: hidden;}
+            .slide .big{
+                margin:0px;
+                padding:0px;
+                border:none;
+            }
+            .slide .big li{
+                list-style:none;
+            }
+            .slide-wrapper .ctl{
+                margin-top:20px;
+            }
+            .slide-wrapper .left,.slide-wrapper .right{
+                cursor:pointer;
+                border:1px solid #bbb;
+                padding: 5px;
+                margin-right:20px;
+            }
 
-			}
-
-			.slide-wrapper .sml li{
-				
-			}
-		</style>
-	</head>
-	<body>
-		<div class='ctn'>
-			<div class='slide-wrapper'>
-				<ul class='big'>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-				</ul>
-				<ul class='sml'>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-				</ul>
-			</div>
-		</div>
-	</body>
+            .sml li{
+                list-style:none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='ctn'>
+            <div class='slide-wrapper'>
+                <div class='slide'>
+                    <ul class='big'>
+                        <li class='item'><img src="./img/1.jpg"></li>
+                        <li class='item'><img src="./img/2.jpg"></li>
+                        <li class='item'><img src="./img/3.jpg"></li>
+                        <li class='item'><img src="./img/4.jpg"></li>
+                        <li class='item'><img src="./img/5.jpg"></li>
+                        <li class='item'><img src="./img/6.jpg"></li>
+                        <li class='item'><img src="./img/7.jpg"></li>
+                        <li class='item'><img src="./img/8.jpg"></li>
+                        <li class='item'><img src="./img/9.jpg"></li>
+                        <li class='item'><img src="./img/10.jpg"></li>
+                        <li class='item'><img src="./img/11.jpg"></li>
+                    </ul>
+                </div>
+                <div class='ctl'>
+                    <span class='left'>上一张</span><span class='right'>下一张</span>
+                </div>
+            </div>
+            <ul class='sml'>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+                <li class='item'></li>
+            </ul>
+        </div>
+        <script src='./jquery-2.1.0.min.js'></script>
+        <script src='./slide.js'></script>
+        <script>
+            $(function(){
+                $('.slide-wrapper').Slide();
+                $('.left').click(function(e){
+                    console.log('left');
+                });
+                $('.right').click(function(e){
+                    console.log('right');
+                });
+            })
+        </script>
+    </body>
 </html>
