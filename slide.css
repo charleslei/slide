@@ -1,2 +1,4 @@
-﻿.slide .big .item{position: relative;}
+﻿.slide .big .item{position: relative;float:left;}
 .slide .big .item span{font-size: 20px;position: absolute;right: 0;bottom: 0;background-color: red;}
+.slide{position:relative;}
+.slide .big{position:relative;}

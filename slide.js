@@ -27,7 +27,15 @@
 
       //注册事件
       me._addEvent();
-      me.doms.bigLists.filter(':gt(0)').hide();
+	  
+	  var effect = me.configs.effect;
+	  if(effect === 'normal'){
+        me.doms.bigLists.filter(':gt(0)').hide();
+	  }else if(effect === 'rtl'){
+	    var len = me.doms.bigLists.length;
+	    $('.slide .big').width(target.width() * len);
+		
+	  }
 
       me.currentEle = $(me.doms.bigLists.get(0));
     },
@@ -61,9 +69,15 @@
 
     _switch: function(one, two){
       var me = this;
-      //one.hide();
-      //two.show();
-
+	  var effect = me.configs.effect;
+	  if(effect === 'normal'){
+	    one.hide();
+        two.show();
+	  }else if(effect === 'rtl'){ //right to left;
+	    var idx = me.doms.bigLists.index(me.configs.currentEle);
+	    //$('.slide .big').left(
+	  }
+      
     },
 
     _left: function(){
