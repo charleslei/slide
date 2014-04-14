@@ -1,1 +1,2 @@
-﻿
+﻿.slide .big .item{position: relative;}
+.slide .big .item span{font-size: 20px;position: absolute;right: 0;bottom: 0;background-color: red;}
