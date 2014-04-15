@@ -87,59 +87,81 @@
     },
 
     _go: function(dir){
-      var me = this;
-      if(me.isAnimal){return;}
+      var me = this, doms = me.doms, cfgs = me.configs;
       var cIdx = me.currentEleIdx;
-      var nIdx = me._next(cIdx,dir);
-      me._switch(cIdx, nIdx, dir);
+      var next;
+      var effect = cfgs.effect;
+      var len = me.length;
+
+      if(me.isAnimal){return;}
+
+      me.isAnimal = true;
+      clearTimeout(me.timeout);
+
+      var nIdx = next = me._next(cIdx,dir);
+      if (effect !== 'normal') {
+        var width = me.shownRect.width;
+        if(dir < 0){
+          (nIdx == len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
+        }else{
+          (next == 0) ? (next = len) : ( (next ==1) ? doms.bigListsCtn.css('left', "0px") : '');
+        }
+      }
+
+      me._beginAnimal(cIdx, next);
       me.currentEleIdx = nIdx;
     },
 
-    _switch: function(cur, next, flag){
+    _autoSwitch1: function(){
       var me = this, doms = me.doms, cfgs = me.configs;
       var dir = cfgs.dir;
       var effect = cfgs.effect;
-      var lists = doms.bigLists;
       var len = me.length;
-      if(dir === 'rtl' || dir === 'ltr'){
-          if(effect === 'normal'){
-              $(lists.get(cur)).hide();
-              $(lists.get(next)).show();
-              //TODO:
-              //me._autoSwitch();
-          }else{
-              var idx = me.currentEleIdx;
-              var width = me.shownRect.width;
-              me.isAnimal = true;
-              if(next == len - 1 && flag < 0){
-                  doms.bigListsCtn.css('left', -len * width + 'px');
-              }else if(next == 0 && flag > 0){
-                  next = len;
-              } else if(next == 1 && flag > 0){
-                  doms.bigListsCtn.css('left', "0px");
-              }
+      var cIdx = me.currentEleIdx;
+      var next;
+      me.isAnimal = true;
 
-              doms.bigListsCtn.animate({left: - next * width + "px"}, function(p){
-                  me.isAnimal = false;
-                  me._autoSwitch();
-              });
-          }        
+      var width = me.shownRect.width;
+      if (dir === 'rtl') {
+        var nIdx = next = me._next(cIdx, 1);
+        (effect !== 'normal') && (next == 0) ? (next = len) : ((next == 1) ? doms.bigListsCtn.css('left', "0px") : '');
+      } else if (dir === 'ltr') {
+        var nIdx = next = me._next(cIdx, -1);
+        (effect !== 'normal') && (nIdx === len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
+      }
+        
+      me._beginAnimal(cIdx, next);
+      me.currentEleIdx = nIdx;
+    },
+
+    _beginAnimal: function(cur, next, callback){
+      var me = this;
+      var effect = me.configs.effect;
+      var width = me.shownRect.width;
+      if(effect === 'normal'){
+        var lists = me.doms.bigLists;
+          $(lists.get(cur)).hide();
+          $(lists.get(next)).show();
+          me.isAnimal = false;
+          me._autoSwitch();
+      }else{
+          me.doms.bigListsCtn.animate({ left: -next * width + "px" }, function(p) {
+              me.isAnimal = false;
+              me._autoSwitch();
+              callback && callback();
+          });
       }
     },
 
-    _autoSwitch: function(){
+    _autoSwitch: function() {
       var me = this, cfgs = me.configs;
-      var auto = cfgs.auto, interval = cfgs.interval, dir = cfgs.dir;;
+      var auto = cfgs.auto, interval = cfgs.interval, dir = cfgs.dir;
 
-      if(auto && interval){
-          clearTimeout(me.timeout);
-          me.timeout = setTimeout(function() {
-            if(dir === 'rtl'){
-              me._go(1);
-            }else if (dir === 'ltr'){
-              me._go(-1);
-            }
-          }, interval);
+      if (auto && interval) {
+        clearTimeout(me.timeout);
+        me.timeout = setTimeout(function() {
+          me._autoSwitch1();
+        }, interval);
       }
     },
 
