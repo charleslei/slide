@@ -2,8 +2,9 @@
   function slide(cfg){
     var configs = {
       index: 0, //默认显示的索引
-      effect: 'rtl', //默认播放的方向; rtl: right to left; ltr: left to right; normal: no slide effect;
-      auto: 'true', //自动播放；true/false;
+      dir: 'rtl', //默认播放的方向; rtl: right to left; ltr: left to right;
+      effect: 'animal', // normal: no slide effect;
+      auto: true, //自动播放；true/false;
       interval: '5000'  //设置自动播放间隔；默认5000ms；
     }
 
@@ -45,7 +46,10 @@
       var effect = cfgs.effect;
       if(effect === 'normal'){
         doms.bigLists.filter(':gt(0)').hide();
-      }else if(effect === 'rtl' || effect === 'ltr'){
+      }
+
+      var effect = cfgs.effect;
+      if(effect !== 'normal'){
         doms.bigListsCtn.append($(doms.bigLists.get(0)).clone()).width(target.width() * (me.length+1));
       }
 
@@ -91,48 +95,51 @@
       me.currentEleIdx = nIdx;
     },
 
-    _switch: function(cur, next, dir){
-      var me = this;
-      var effect = me.configs.effect;
-      var lists = me.doms.bigLists;
+    _switch: function(cur, next, flag){
+      var me = this, doms = me.doms, cfgs = me.configs;
+      var dir = cfgs.dir;
+      var effect = cfgs.effect;
+      var lists = doms.bigLists;
       var len = me.length;
-      if(effect === 'normal'){
-        $(lists.get(cur)).hide();
-        $(lists.get(next)).show();
-        me._autoSwitch();
-      }else if(effect === 'rtl' || effect === 'ltr'){ //right to left;
-        var idx = me.currentEleIdx;
-        var width = me.shownRect.width;
-        me.isAnimal = true;
-        if(next == len - 1 && dir < 0){
-          me.doms.bigListsCtn.css('left', -len * width + 'px');
-        }else if(next == 0 && dir > 0){
-          next = len;
-        } else if(next == 1 && dir > 0){
-          me.doms.bigListsCtn.css('left', "0px");
-        }
+      if(dir === 'rtl' || dir === 'ltr'){
+          if(effect === 'normal'){
+              $(lists.get(cur)).hide();
+              $(lists.get(next)).show();
+              //TODO:
+              //me._autoSwitch();
+          }else{
+              var idx = me.currentEleIdx;
+              var width = me.shownRect.width;
+              me.isAnimal = true;
+              if(next == len - 1 && flag < 0){
+                  doms.bigListsCtn.css('left', -len * width + 'px');
+              }else if(next == 0 && flag > 0){
+                  next = len;
+              } else if(next == 1 && flag > 0){
+                  doms.bigListsCtn.css('left', "0px");
+              }
 
-        me.doms.bigListsCtn.animate({left: - next * width + "px"}, function(p){
-          me.isAnimal = false;
-          me._autoSwitch();
-        });
-      }        
+              doms.bigListsCtn.animate({left: - next * width + "px"}, function(p){
+                  me.isAnimal = false;
+                  me._autoSwitch();
+              });
+          }        
+      }
     },
 
     _autoSwitch: function(){
-      var me = this;
-      if(me.configs.auto && me.configs.interval){
-      var interval = me.configs.interval;
-      var dir = me.configs.effect;
-      clearTimeout(me.timeout);
-      me.timeout = setTimeout(function() {
-        if(dir === 'rtl'){
-          me._go(1);
-        }else if (dir === 'ltr'){
-          me._go(-1);
-        }
-      }, interval);
+      var me = this, cfgs = me.configs;
+      var auto = cfgs.auto, interval = cfgs.interval, dir = cfgs.dir;;
 
+      if(auto && interval){
+          clearTimeout(me.timeout);
+          me.timeout = setTimeout(function() {
+            if(dir === 'rtl'){
+              me._go(1);
+            }else if (dir === 'ltr'){
+              me._go(-1);
+            }
+          }, interval);
       }
     },
 
