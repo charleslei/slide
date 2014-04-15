@@ -5,7 +5,9 @@
       dir: 'rtl', //默认播放的方向; rtl: right to left; ltr: left to right;
       effect: 'animal', // normal: no slide effect;
       auto: true, //自动播放；true/false;
-      interval: '5000'  //设置自动播放间隔；默认5000ms；
+      interval: '5000',  //设置自动播放间隔；默认5000ms；
+	  beforeChange: function(){},
+	  afterChange: function(){}
     }
 
     var me = this;
@@ -77,6 +79,14 @@
       }).bind('mouseout', function(e){
         me._autoSwitch();
       });
+
+      me.doms.smlLists.bind('click', function(e){
+          var $this = $(this);
+          var idx = me.doms.smlLists.index($this);
+          me._jump(idx);
+          me.currentEleIdx = idx;
+          e.preventDefault();
+      })
     },
 
     _next: function(curIdx, flag){//true: go ahead; false: go back;
@@ -108,8 +118,15 @@
         }
       }
 
-      me._beginAnimal(cIdx, next);
+      me._beginAnimal(cIdx, next, nIdx);
       me.currentEleIdx = nIdx;
+    },
+
+    _jump: function(idx){
+       var me = this, cIdx = me.currentEleIdx;
+       if(me.isAnimal){return;}
+       me.isAnimal = true;
+       me._beginAnimal(cIdx, idx, idx);
     },
 
     _autoSwitch1: function(){
@@ -130,23 +147,26 @@
         (effect !== 'normal') && (nIdx === len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
       }
         
-      me._beginAnimal(cIdx, next);
+      me._beginAnimal(cIdx, next, nIdx);
       me.currentEleIdx = nIdx;
     },
 
-    _beginAnimal: function(cur, next, callback){
+    _beginAnimal: function(cur, next, nIdx, callback){
       var me = this;
       var effect = me.configs.effect;
       var width = me.shownRect.width;
+      me._beforeChange(next);
       if(effect === 'normal'){
         var lists = me.doms.bigLists;
           $(lists.get(cur)).hide();
           $(lists.get(next)).show();
           me.isAnimal = false;
+          me._afterChange(nIdx);
           me._autoSwitch();
       }else{
           me.doms.bigListsCtn.animate({ left: -next * width + "px" }, function(p) {
               me.isAnimal = false;
+              me._afterChange(nIdx);
               me._autoSwitch();
               callback && callback();
           });
@@ -171,7 +191,19 @@
 
     _right: function(){
       this._go(1);
-    }
+    },
+	
+	_beforeChange: function(idx){
+		var me = this;
+		me.configs.beforeChange();
+	},
+	
+	_afterChange: function(idx){
+		var me = this;
+        me.doms.smlLists.removeClass('active');
+        $(me.doms.smlLists.get(idx)).addClass('active');
+		me.configs.afterChange();
+	}
   }
 
   $.fn.Slide = function(cfg){

@@ -2,7 +2,7 @@
 <html>
     <head>
         <style type="text/css">
-            .ctn {margin: 50px auto; width: 960px;}
+            .ctn {margin: 0 auto; width: 960px;}
             .slide{width: 700px;height: 525px;overflow: hidden;}
             .slide .big{
                 margin:0px;
@@ -27,10 +27,18 @@
                 padding: 5px;
                 margin-right:20px;
             }
-
+			.sml{
+				margin:0;
+				padding:0;
+			}
             .sml li{
                 list-style:none;
+				float:left;
+				border: 2px solid #ccc;
             }
+			.sml li.active{
+				border: 2px solid red;
+			}
         </style>
         <link rel="stylesheet" type="text/css" href="./slide.css">
     </head>
@@ -42,42 +50,44 @@
                         <li class='item'><img src="./img/1.jpg"><span>/img/1.jpg</span></li>
                         <li class='item'><img src="./img/2.jpg"><span>/img/2.jpg</span></li>
                         <li class='item'><img src="./img/3.jpg"><span>/img/3.jpg</span></li>
-                        <!--
                         <li class='item'><img src="./img/4.jpg"><span>/img/4.jpg</span></li>
                         <li class='item'><img src="./img/5.jpg"><span>/img/5.jpg</span></li>
                         <li class='item'><img src="./img/6.jpg"><span>/img/6.jpg</span></li>
+                        <!--
                         <li class='item'><img src="./img/7.jpg"><span>/img/7.jpg</span></li>
                         <li class='item'><img src="./img/8.jpg"><span>/img/8.jpg</span></li>
                         <li class='item'><img src="./img/9.jpg"><span>/img/9.jpg</span></li>
                         <li class='item'><img src="./img/10.jpg"><span>/img/10.jpg</span></li>
-                        <li class='item'><img src="./img/11.jpg"><span>/img/11.jpg</span></li>
-                        -->
+                        <li class='item'><img src="./img/11.jpg"><span>/img/11.jpg</span></li>-->
                     </ul>
+                </div>
+				
+                <div style="width:100%;overflow:hidden;height:78px;">
+				<ul class='sml'>
+                        <li class='item'><img style="width:100px" src="./img/1.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/2.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/3.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/4.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/5.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/6.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/7.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/8.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/9.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/10.jpg"></li>
+                        <li class='item'><img style="width:100px" src="./img/11.jpg"></li>
+				</ul>
                 </div>
                 <div class='ctl'>
                     <span class='left'>上一张</span><span class='right'>下一张</span>
                 </div>
             </div>
-            <ul class='sml'>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-                <li class='item'></li>
-            </ul>
         </div>
         <script src='./jquery-2.1.0.min.js'></script>
         <script src='./slide.js'></script>
         <script>
             $(function(){
-                $('.slide-wrapper').Slide({effect: 'normal', dir: 'ltr', auto: true, interval:2000});
-                //$('.slide-wrapper').Slide({index: 0, dir: 'rtl', auto: true, interval: 2000});
+                //$('.slide-wrapper').Slide({effect: 'normal', dir: 'ltr', auto: true, interval:2000});
+                $('.slide-wrapper').Slide({index: 0, dir: 'rtl', auto: true, interval: 2000});
             })
         </script>
     </body>
