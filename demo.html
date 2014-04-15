@@ -1,16 +1,22 @@
-﻿<! doctype html>
+﻿<!doctype html>
 <html>
     <head>
         <style type="text/css">
-            .ctn {margin: 50px 0;}
-            .slide{border: 2px solid #999;width: 700px;height: 525px;overflow: hidden;}
+            .ctn {margin: 50px auto; width: 960px;}
+            .slide{width: 700px;height: 525px;overflow: hidden;}
             .slide .big{
                 margin:0px;
                 padding:0px;
                 border:none;
+                height: 525px;
+                width: 700px;
             }
             .slide .big li{
                 list-style:none;
+            }
+            .slide-wrapper{
+                width: 700px;
+                height: 525px;
             }
             .slide-wrapper .ctl{
                 margin-top:20px;
@@ -68,8 +74,8 @@
         <script src='./slide.js'></script>
         <script>
             $(function(){
-                //$('.slide-wrapper').Slide({effect: 'normal'});
-				$('.slide-wrapper').Slide({effect: 'rtl'});
+                //$('.slide-wrapper').Slide({effect: 'normal', interval: 2000, effect: 'normal'});
+                $('.slide-wrapper').Slide({index: 0, effect: 'ltr', auto: true, interval: 2000});
             })
         </script>
     </body>
