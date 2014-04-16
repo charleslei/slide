@@ -6,8 +6,8 @@
       effect: 'animal', // normal: no slide effect;
       auto: true, //自动播放；true/false;
       interval: '5000',  //设置自动播放间隔；默认5000ms；
-	  beforeChange: function(idx){},
-	  afterChange: function(idx){}
+      beforeChange: function(idx){},
+      afterChange: function(idx){}
     }
 
     var me = this;
@@ -44,10 +44,10 @@
       var w = doms.slideCtn.width();
       var h = doms.slideCtn.height();
       me.shownRect = {width: w, height: h};
-	  
 
-	  //初始化动画；
-	  me._initPosition();
+
+      //初始化动画；
+      me._initPosition();
 
       //注册事件
       me._addEvent();
@@ -56,10 +56,10 @@
     _addEvent: function(){
       var me = this;
       me.doms.left.bind('click.slide', function(e){
-        me._left();
+        me.left();
       });
       me.doms.right.bind('click.slide', function(e){
-        me._right();
+        me.right();
       });
 
       me.configs.tar.find('.slide').bind('mouseover', function(e){
@@ -69,46 +69,46 @@
       });
 
       me.doms.smlLists.bind('click', function(e){
-          var $this = $(this);
-          var idx = me.doms.smlLists.index($this);
-          me._jump(idx);
-          e.preventDefault();
+        var $this = $(this);
+        var idx = me.doms.smlLists.index($this);
+        me._jump(idx);
+        e.preventDefault();
       })
     },
-	
-	_initPosition: function(){
-	  var me = this;
+
+    _initPosition: function(){
+      var me = this;
       var cfgs = me.configs;
       var width = me.shownRect.width;
-	  var len = me.length;
-	  var defIdx = cfgs.index;
-	  var lists = me.doms.bigLists;
-	  var doms = me.doms;
-	  var target = cfgs.tar;
-	  
-	  if(defIdx >= len){
+      var len = me.length;
+      var defIdx = cfgs.index;
+      var lists = me.doms.bigLists;
+      var doms = me.doms;
+      var target = cfgs.tar;
+
+      if(defIdx >= len){
         me.currentEleIdx = len - 1;
-	  }else if(defIdx < 0){
+      }else if(defIdx < 0){
         me.currentEleIdx = 0;
-	  }else{
+      }else{
         me.currentEleIdx = defIdx;
-	  }
+      }
 
       //设置默认显示索引
-	  me.configs.beforeChange(me.currentEleIdx);
+      me.configs.beforeChange(me.currentEleIdx);
 
       var effect = cfgs.effect;
       if(effect === 'normal'){
         lists.hide();
-		$(lists.get(me.currentEleIdx)).show();
-	  } else{
+        $(lists.get(me.currentEleIdx)).show();
+      }else{
         doms.bigListsCtn.append($(lists.get(0)).clone()).width(width * (len+1));
-	    me.doms.bigListsCtn.css('left', -me.currentEleIdx * width + 'px');
-      }  
+        me.doms.bigListsCtn.css('left', -me.currentEleIdx * width + 'px');
+      }
 
-	  //启动自动播放
+      //启动自动播放
       me._autoSwitch();
-	},
+    },
 
     _next: function(curIdx, flag){//true: go ahead; false: go back;
       var me = this;
@@ -144,11 +144,11 @@
     },
 
     _jump: function(idx){
-       var me = this, cIdx = me.currentEleIdx;
-       if(me.isAnimal){return;}
-       me.isAnimal = true;
-       me._beginAnimal(cIdx, idx, idx);
-       me.currentEleIdx = idx;
+      var me = this, cIdx = me.currentEleIdx;
+      if(me.isAnimal){return;}
+      me.isAnimal = true;
+      me._beginAnimal(cIdx, idx, idx);
+      me.currentEleIdx = idx;
     },
 
     _autoSwitch1: function(){
@@ -168,7 +168,7 @@
         var nIdx = next = me._next(cIdx, -1);
         (effect !== 'normal') && (nIdx === len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
       }
-        
+
       me._beginAnimal(cIdx, next, nIdx);
       me.currentEleIdx = nIdx;
     },
@@ -180,18 +180,18 @@
       me._beforeChange(nIdx);
       if(effect === 'normal'){
         var lists = me.doms.bigLists;
-          $(lists.get(cur)).hide();
-          $(lists.get(next)).show();
+        $(lists.get(cur)).hide();
+        $(lists.get(next)).show();
+        me.isAnimal = false;
+        me._afterChange(nIdx);
+        me._autoSwitch();
+      }else{
+        me.doms.bigListsCtn.animate({ left: -next * width + "px" }, function(p) {
           me.isAnimal = false;
           me._afterChange(nIdx);
           me._autoSwitch();
-      }else{
-          me.doms.bigListsCtn.animate({ left: -next * width + "px" }, function(p) {
-              me.isAnimal = false;
-              me._afterChange(nIdx);
-              me._autoSwitch();
-              callback && callback();
-          });
+          callback && callback();
+        });
       }
     },
 
@@ -207,23 +207,23 @@
       }
     },
 
-    _left: function(){
+    left: function(){
       this._go(-1);
     },
 
-    _right: function(){
+    right: function(){
       this._go(1);
     },
-	
-	_beforeChange: function(idx){
-		var me = this;
-		me.configs.beforeChange(idx);
-	},
-	
-	_afterChange: function(idx){
-		var me = this;
-		me.configs.afterChange();
-	}
+
+    _beforeChange: function(idx){
+      var me = this;
+      me.configs.beforeChange(idx);
+    },
+
+    _afterChange: function(idx){
+      var me = this;
+      me.configs.afterChange();
+    }
   }
 
   $.fn.Slide = function(cfg){
