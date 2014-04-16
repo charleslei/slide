@@ -6,8 +6,8 @@
       effect: 'animal', // normal: no slide effect;
       auto: true, //自动播放；true/false;
       interval: '5000',  //设置自动播放间隔；默认5000ms；
-	  beforeChange: function(){},
-	  afterChange: function(){}
+	  beforeChange: function(idx){},
+	  afterChange: function(idx){}
     }
 
     var me = this;
@@ -45,21 +45,9 @@
       var h = doms.slideCtn.height();
       me.shownRect = {width: w, height: h};
 	  
-      var effect = cfgs.effect;
-      if(effect === 'normal'){
-        doms.bigLists.filter(':gt(0)').hide();
-      }
 
-      var effect = cfgs.effect;
-      if(effect !== 'normal'){
-        doms.bigListsCtn.append($(doms.bigLists.get(0)).clone()).width(target.width() * (me.length+1));
-      }
-
-      //设置默认显示索引
-      me.currentEleIdx = cfgs.index;
-
-      //启动自动播放
-      me._autoSwitch();
+	  //初始化动画；
+	  me._initPosition();
 
       //注册事件
       me._addEvent();
@@ -84,10 +72,43 @@
           var $this = $(this);
           var idx = me.doms.smlLists.index($this);
           me._jump(idx);
-          me.currentEleIdx = idx;
           e.preventDefault();
       })
     },
+	
+	_initPosition: function(){
+	  var me = this;
+      var cfgs = me.configs;
+      var width = me.shownRect.width;
+	  var len = me.length;
+	  var defIdx = cfgs.index;
+	  var lists = me.doms.bigLists;
+	  var doms = me.doms;
+	  var target = cfgs.tar;
+	  
+	  if(defIdx >= len){
+        me.currentEleIdx = len - 1;
+	  }else if(defIdx < 0){
+        me.currentEleIdx = 0;
+	  }else{
+        me.currentEleIdx = defIdx;
+	  }
+
+      //设置默认显示索引
+	  me.configs.beforeChange(me.currentEleIdx);
+
+      var effect = cfgs.effect;
+      if(effect === 'normal'){
+        lists.hide();
+		$(lists.get(me.currentEleIdx)).show();
+	  } else{
+        doms.bigListsCtn.append($(lists.get(0)).clone()).width(width * (len+1));
+	    me.doms.bigListsCtn.css('left', -me.currentEleIdx * width + 'px');
+      }  
+
+	  //启动自动播放
+      me._autoSwitch();
+	},
 
     _next: function(curIdx, flag){//true: go ahead; false: go back;
       var me = this;
@@ -127,6 +148,7 @@
        if(me.isAnimal){return;}
        me.isAnimal = true;
        me._beginAnimal(cIdx, idx, idx);
+       me.currentEleIdx = idx;
     },
 
     _autoSwitch1: function(){
@@ -155,7 +177,7 @@
       var me = this;
       var effect = me.configs.effect;
       var width = me.shownRect.width;
-      me._beforeChange(next);
+      me._beforeChange(nIdx);
       if(effect === 'normal'){
         var lists = me.doms.bigLists;
           $(lists.get(cur)).hide();
@@ -195,13 +217,11 @@
 	
 	_beforeChange: function(idx){
 		var me = this;
-		me.configs.beforeChange();
+		me.configs.beforeChange(idx);
 	},
 	
 	_afterChange: function(idx){
 		var me = this;
-        me.doms.smlLists.removeClass('active');
-        $(me.doms.smlLists.get(idx)).addClass('active');
 		me.configs.afterChange();
 	}
   }
