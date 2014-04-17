@@ -86,16 +86,16 @@
         <script src='./slide.js'></script>
         <script>
             $(function(){
+				/*
 			
                 $('.slide-wrapper').Slide({index: 5, effect: 'normal', dir: 'rtl', auto: true, interval:2000, beforeChange: function(idx){
 				  $('.sml li').removeClass('active');
 				  $($('.sml li').get(idx)).addClass('active');
-				}});
-				/*
-                $('.slide-wrapper').Slide({index: 2, dir: 'rtl', auto: true, interval: 2000, beforeChange: function(idx){
+				}});*/
+                $('.slide-wrapper').Slide({index: 2, dir: 'ltr', auto: true, interval: 2000, beforeChange: function(idx){
 				  $('.sml li').removeClass('active');
 				  $($('.sml li').get(idx)).addClass('active');
-				}});*/
+				}});
             })
         </script>
     </body>

@@ -1,16 +1,18 @@
 ﻿$(function(){
   function slide(cfg){
+    var me = this;
+    me.EFFECTS = {SLIDE: 'slide', NORMAL: 'normal'};
+    me.DIR = {RTL: 'rtl', LTR: 'ltr'};
     var configs = {
       index: 0, //默认显示的索引
-      dir: 'rtl', //默认播放的方向; rtl: right to left; ltr: left to right;
-      effect: 'animal', // normal: no slide effect;
+      dir: me.DIR.RTL, //默认播放的方向; rtl: right to left; ltr: left to right;
+      effect: me.EFFECTS.SLIDE, // normal: no slide effect;
       auto: true, //自动播放；true/false;
       interval: '5000',  //设置自动播放间隔；默认5000ms；
       beforeChange: function(idx){},
       afterChange: function(idx){}
     }
 
-    var me = this;
     $.extend(configs, cfg);
     me.configs = configs;
     me._init();
@@ -65,7 +67,7 @@
       me.configs.tar.find('.slide').bind('mouseover', function(e){
         clearTimeout(me.timeout);
       }).bind('mouseout', function(e){
-        me._autoSwitch();
+        me._initAutoSwitch();
       });
 
       me.doms.smlLists.bind('click', function(e){
@@ -98,7 +100,7 @@
       me.configs.beforeChange(me.currentEleIdx);
 
       var effect = cfgs.effect;
-      if(effect === 'normal'){
+      if(effect === me.EFFECTS.NORMAL){
         lists.hide();
         $(lists.get(me.currentEleIdx)).show();
       }else{
@@ -107,7 +109,7 @@
       }
 
       //启动自动播放
-      me._autoSwitch();
+      me._initAutoSwitch();
     },
 
     _next: function(curIdx, flag){//true: go ahead; false: go back;
@@ -130,7 +132,7 @@
       clearTimeout(me.timeout);
 
       var nIdx = next = me._next(cIdx,dir);
-      if (effect !== 'normal') {
+      if (effect === me.EFFECTS.SLIDE) {
         var width = me.shownRect.width;
         if(dir < 0){
           (nIdx == len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
@@ -151,7 +153,7 @@
       me.currentEleIdx = idx;
     },
 
-    _autoSwitch1: function(){
+    _switch: function(){
       var me = this, doms = me.doms, cfgs = me.configs;
       var dir = cfgs.dir;
       var effect = cfgs.effect;
@@ -161,12 +163,12 @@
       me.isAnimal = true;
 
       var width = me.shownRect.width;
-      if (dir === 'rtl') {
+      if (dir === me.DIR.RTL) {
         var nIdx = next = me._next(cIdx, 1);
-        (effect !== 'normal') && (next == 0) ? (next = len) : ((next == 1) ? doms.bigListsCtn.css('left', "0px") : '');
-      } else if (dir === 'ltr') {
+        (effect === me.EFFECTS.SLIDE) && (next == 0) ? (next = len) : ((next == 1) ? doms.bigListsCtn.css('left', "0px") : '');
+      } else if (dir === me.DIR.LTR) {
         var nIdx = next = me._next(cIdx, -1);
-        (effect !== 'normal') && (nIdx === len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
+        (effect === me.EFFECTS.SLIDE) && (nIdx === len - 1) && doms.bigListsCtn.css('left', -len * width + 'px');
       }
 
       me._beginAnimal(cIdx, next, nIdx);
@@ -178,31 +180,31 @@
       var effect = me.configs.effect;
       var width = me.shownRect.width;
       me._beforeChange(nIdx);
-      if(effect === 'normal'){
+      if(effect === me.EFFECTS.NORMAL){
         var lists = me.doms.bigLists;
         $(lists.get(cur)).hide();
         $(lists.get(next)).show();
         me.isAnimal = false;
         me._afterChange(nIdx);
-        me._autoSwitch();
-      }else{
+        me._initAutoSwitch();
+      }else if(effect === me.EFFECTS.SLIDE){
         me.doms.bigListsCtn.animate({ left: -next * width + "px" }, function(p) {
           me.isAnimal = false;
           me._afterChange(nIdx);
-          me._autoSwitch();
+          me._initAutoSwitch();
           callback && callback();
         });
       }
     },
 
-    _autoSwitch: function() {
+    _initAutoSwitch: function() {
       var me = this, cfgs = me.configs;
       var auto = cfgs.auto, interval = cfgs.interval, dir = cfgs.dir;
 
       if (auto && interval) {
         clearTimeout(me.timeout);
         me.timeout = setTimeout(function() {
-          me._autoSwitch1();
+          me._switch();
         }, interval);
       }
     },
