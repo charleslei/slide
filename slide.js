@@ -1,12 +1,13 @@
 ﻿$(function(){
   function slide(cfg){
     var me = this;
-    me.EFFECTS = {SLIDE: 'slide', NORMAL: 'normal'};
-    me.DIR = {RTL: 'rtl', LTR: 'ltr'};
+    me.EFFECTS = {SLIDE: 'slide', NORMAL: 'normal', SCROLL: 'scroll'}; // normal: no slide effect;
+    me.DIR = {RTL: 'rtl', LTR: 'ltr'};//rtl: right to left; ltr: left to right;
+	
     var configs = {
       index: 0, //默认显示的索引
-      dir: me.DIR.RTL, //默认播放的方向; rtl: right to left; ltr: left to right;
-      effect: me.EFFECTS.SLIDE, // normal: no slide effect;
+      dir: me.DIR.RTL, //默认播放的方向; 
+      effect: me.EFFECTS.SLIDE,
       auto: true, //自动播放；true/false;
       interval: '5000',  //设置自动播放间隔；默认5000ms；
       beforeChange: function(idx){},
@@ -59,21 +60,30 @@
       var me = this;
       me.doms.left.bind('click.slide', function(e){
         me.left();
+        e.preventDefault();
       });
       me.doms.right.bind('click.slide', function(e){
         me.right();
+		e.preventDefault();
       });
 
-      me.configs.tar.find('.slide').bind('mouseover', function(e){
+      me.configs.tar.find('.slide').bind('mouseover.slide', function(e){
         clearTimeout(me.timeout);
+        e.preventDefault();
       }).bind('mouseout', function(e){
         me._initAutoSwitch();
+        e.preventDefault();
       });
 
+      if(me.configs.effect === me.EFFECTS.SCROLL){
+        me.doms.bigLists.bind('click.slide', function(e){
+        });
+      };
+	  
       me.doms.smlLists.bind('click', function(e){
         var $this = $(this);
         var idx = me.doms.smlLists.index($this);
-        me._jump(idx);
+        me.jump(idx);
         e.preventDefault();
       })
     },
@@ -103,7 +113,7 @@
       if(effect === me.EFFECTS.NORMAL){
         lists.hide();
         $(lists.get(me.currentEleIdx)).show();
-      }else{
+      }else if(effect === me.EFFECTS.SLIDE){
         doms.bigListsCtn.append($(lists.get(0)).clone()).width(width * (len+1));
         me.doms.bigListsCtn.css('left', -me.currentEleIdx * width + 'px');
       }
@@ -144,8 +154,8 @@
       me._beginAnimal(cIdx, next, nIdx);
       me.currentEleIdx = nIdx;
     },
-
-    _jump: function(idx){
+	//public，外部可以访问；
+    jump: function(idx){
       var me = this, cIdx = me.currentEleIdx;
       if(me.isAnimal){return;}
       me.isAnimal = true;
